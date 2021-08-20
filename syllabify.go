@@ -158,7 +158,94 @@ func onsetNucleusCoda(s string) (string, string, string) {
 	nucleus := ""
 	coda := ""
 	// TODO
+	/*
+		    for i, ch := range []rune(s) {
+		        if IsVowel(ch) {
+		            if i == 0 && breathing(ch) {
+		                onset = breathing(ch)
+		                break
+					} else if i == 0 && len(s) > 1 && breathing(s[1]) {
+		                onset = breathing(s[1])
+		                break
+					} else {
+						if i > 0 {
+							onset = s[:i]
+						}
+		                break
+					}
+				}
+			}
+		    if onset == "" {
+		        return s, "", ""
+			}
+		    for j, ch := range []rune(s[i:]) {
+		        if !isVowel(ch) && !isBreathing(ch) {
+		            nucleus = s[i:i + j]
+		            coda = s[i + j:]
+		            break
+				}
+			}
+		    if nucleus == "" {
+		        nucleus = s[i:]
+		        coda = ""
+			}
+		    if isinstance(onset, Breathing) {
+		        nucleus = strip_breathing(nucleus)
+			}
+	*/
 	return onset, nucleus, coda
+}
+
+func rime(s string) string {
+	_, n, c := onsetNucleusCoda(s)
+	return n + c
+}
+
+func body(s string) string {
+	o, n, _ := onsetNucleusCoda(s)
+	// TODO
+	/*
+		if isBreathing(o, Breathing) {
+			return addNecessaryBreathing(n, o)
+		}
+	*/
+	return o + n
+}
+
+func syllableLength(s string, final string) Length {
+	// TODO
+	return UNKNOWN
+}
+
+func syllableAccent(s string) Accent {
+	n := nucleus(s)
+	if n != "" {
+		for _, ch := range []rune(n) {
+			a := accent(ch)
+			if a != nil {
+				return a.(Accent)
+			}
+		}
+	}
+	return 0
+}
+
+func rebreath(word string) string {
+	if word == "" {
+		return ""
+	}
+	if strings.HasPrefix(word, "h") {
+		word = addNecessaryBreathing(word[1:], ROUGH)
+	} else {
+		word = addNecessaryBreathing(word, SMOOTH)
+	}
+	word = removeRedundantMacron(word)
+	return word
+}
+
+func addNecessaryBreathing(w string, breathing Breathing) string {
+	//TODO
+	return w
 }
 
 // RemoveAccentFromRune strips all accents from a character. Returns true

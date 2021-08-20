@@ -105,6 +105,70 @@ func TestSyllabify(t *testing.T) {
 	//}
 }
 
+func TestOnsetNucleusCoda(t *testing.T) {
+
+	{
+		o := onset("κ")
+		if o != "κ" {
+			t.Fatal("Onset() failed")
+		}
+	}
+
+	{
+		n := nucleus("ό")
+		if n != "ό" {
+			t.Fatal("Nucleus() failed")
+		}
+	}
+
+	{
+		c := coda("ς")
+		if c != "ς" {
+			t.Fatal("Coda() failed")
+		}
+	}
+
+	{
+		o, n, c := onsetNucleusCoda("κός")
+		if o != "κ" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if n != "ό" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if c != "ς" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+	}
+
+	{
+		o, n, c := onsetNucleusCoda("ναι")
+		if o != "ν" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if n != "αι" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if c != "" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+	}
+
+	{
+		o, n, c := onsetNucleusCoda("βββ")
+		if o != "βββ" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if n != "" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if c != "" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+	}
+
+}
+
 func ArrayEqual(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
