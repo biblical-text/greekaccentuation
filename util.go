@@ -45,6 +45,33 @@ func RuneStringHasPrefix(item []rune, candidate []rune) bool {
 	return true
 }
 
+// RuneStringHasInfix checks if a rune array contains a string of runes
+func RuneStringHasInfix(item []rune, candidate []rune) bool {
+	itemLength := len(item)
+	if itemLength < len(candidate) {
+		return false
+	}
+	if len(candidate) == 0 {
+		return true
+	}
+	for x, _ := range item {
+		match := true
+		for y, _ := range candidate {
+			if x+y >= itemLength {
+				match = false
+				break
+			}
+			if item[x+y] != candidate[y] {
+				match = false
+			}
+		}
+		if match {
+			return true
+		}
+	}
+	return false
+}
+
 // RuneStringMatch returns true if two rune strings exactly match
 func RuneStringMatch(a, b []rune) bool {
 	if len(a) != len(b) {
