@@ -61,7 +61,7 @@ func DisplayWord(parts []string) string {
 
 // Syllabify splits a word into a string array of syllables.
 func Syllabify(word string) []string {
-	characters := []rune(norm.NFC.String(word))
+	characters := []rune(norm.NFD.String(word))
 	state := 0
 	currentSyllable := []rune{}
 	result := []string{}
@@ -74,13 +74,19 @@ func Syllabify(word string) []string {
 				state = 1
 			}
 		case 1:
-			if IsVowel(ch) {
+			if IsVowel(ch) || ch == ROUGH.Rune() {
 				if isDipthong(ch, currentSyllable[0]) {
-					if len(currentSyllable) > 1 && currentSyllable[1] == 'ι' {
-						result = append([]string{string(currentSyllable[1:])}, result...)
+					if currentSyllable[0] == ACUTE.Rune() {
 						currentSyllable = append([]rune{ch}, currentSyllable[0])
-					} else {
-						currentSyllable = append([]rune{ch}, currentSyllable...)
+					} else if currentSyllable[0] == ROUGH.Rune() {
+						currentSyllable = append([]rune{ch}, currentSyllable[0])
+					} else if isDipthong(ch, currentSyllable[0]) {
+						if len(currentSyllable) > 1 && currentSyllable[1] == 'ι' {
+							result = append([]string{string(currentSyllable[1:])}, result...)
+							currentSyllable = append([]rune{ch}, currentSyllable[0])
+						} else {
+							currentSyllable = append([]rune{ch}, currentSyllable...)
+						}
 					}
 				} else {
 					result = append([]string{string(currentSyllable)}, result...)
@@ -107,6 +113,10 @@ func Syllabify(word string) []string {
 		}
 	}
 	result = append([]string{string(currentSyllable)}, result...)
+	for i, _ := range result {
+		result[i] = norm.NFC.String(result[i])
+
+	}
 	return result
 }
 
@@ -156,30 +166,39 @@ func coda(s string) string {
 // Returns composed (not decomposed) unicode format
 func onsetNucleusCoda(s string) (string, string, string) {
 	letters := []rune(norm.NFC.String(s))
-
 	var onset []rune
 	var nucleus []rune
 	var coda []rune
 
+	if s == "" {
+		return "", "", ""
+	}
+
 	li := -1
+	didBreak := false
 	for i, ch := range letters {
 		li = i
 		if IsVowel(ch) {
-			if i == 0 && isBreathing(ch) {
+			if i == 0 && breathing(ch) != nil {
 				onset = letters[0:1]
+				didBreak = true
 				break
-			} else if i == 0 && len(letters) > 1 && isBreathing(letters[1]) {
-				onset = letters[1:2]
+			} else if i == 0 && len(letters) > 1 && breathing(letters[1]) != nil {
+				onset = []rune{breathing(letters[1]).Rune()}
+				didBreak = true
 				break
 			} else {
 				if i > 0 {
 					onset = letters[:i]
+				} else {
+					onset = []rune{}
 				}
+				didBreak = true
 				break
 			}
 		}
 	}
-	if len(onset) == 0 || li == -1 {
+	if !didBreak {
 		return s, "", ""
 	}
 
@@ -193,7 +212,7 @@ func onsetNucleusCoda(s string) (string, string, string) {
 	if len(nucleus) == 0 {
 		nucleus = letters[li:]
 	}
-	if len(onset) == 1 && isBreathing(onset[0]) {
+	if len(onset) == 1 && breathing(onset[0]) != nil {
 		nucleus = stripBreathing(nucleus)
 	}
 
@@ -207,8 +226,7 @@ func rime(s string) string {
 
 func body(s string) string {
 	o, n, _ := onsetNucleusCoda(s)
-
-	if len(o) == 1 && isBreathing([]rune(o)[0]) {
+	if len(o) > 0 && breathing([]rune(o)[0]) != nil {
 		return addNecessaryBreathing(n, Breathing([]rune(o)[0]))
 	}
 	return o + n
@@ -293,9 +311,39 @@ func rebreath(word string) string {
 	return word
 }
 
+//
 func addNecessaryBreathing(w string, breathing Breathing) string {
-	//TODO
-	return w
+	if w == "" {
+		return w
+	}
+	s := Syllabify(w)
+	if len(s) == 0 {
+		return w
+	}
+
+	o, ns, c := onsetNucleusCoda(s[0])
+	n := []rune(ns)
+	if o == "" {
+		var lastVowel int = -1
+		var pre []rune
+		var post []rune
+		for i, ch := range n {
+			if RuneInArray(unicode.ToLower(Base(ch)), []rune("αεηιουω")) {
+				lastVowel = i
+			}
+		}
+		if lastVowel > 0 {
+			pre = n[0:lastVowel]
+		}
+		if lastVowel+1 < len(n) {
+			post = n[lastVowel+1:]
+		}
+		n = append(append(pre, AddBreathing(n[lastVowel], breathing)), post...)
+		k := o + string(n) + c + strings.Join(s[1:], "")
+		return norm.NFKC.String(k)
+	} else {
+		return w
+	}
 }
 
 // RemoveAccentFromRune strips all accents from a character. Returns true

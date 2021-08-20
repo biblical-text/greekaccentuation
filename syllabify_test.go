@@ -79,13 +79,13 @@ func TestDisplayWord(t *testing.T) {
 		t.Fatal("DisplayWord() failed")
 	}
 	if DisplayWord(Syllabify("γυναικός")) != "γυ.ναι.κός" {
-		t.Fatalf("Syllabify() failed: %v", DisplayWord(Syllabify("γυναικός")))
+		t.Fatalf("DisplayWord() failed: %v", DisplayWord(Syllabify("γυναικός")))
 	}
 	if DisplayWord(Syllabify("καταλλάσσω")) != "κα.ταλ.λάσ.σω" {
-		t.Fatal("Syllabify() failed")
+		t.Fatal("DisplayWord() failed")
 	}
 	if DisplayWord(Syllabify("γγγ")) != "γγγ" {
-		t.Fatal("Syllabify() failed")
+		t.Fatal("DisplayWord() failed")
 	}
 }
 
@@ -97,6 +97,9 @@ func TestSyllabify(t *testing.T) {
 		t.Fatal("Syllabify() failed")
 	}
 	if !ArrayEqual(Syllabify("γγγ"), []string{"γγγ"}) {
+		t.Fatal("Syllabify() failed")
+	}
+	if !ArrayEqual(Syllabify("οί"), []string{"οί"}) {
 		t.Fatal("Syllabify() failed")
 	}
 	// TODO: I am not yet sure of the form of ῡ́ and why it is relevant.
@@ -132,6 +135,30 @@ func TestIotaSubscript(t *testing.T) {
 	}
 	if iotaSubscript('α') != nil {
 		t.Fatalf("iotaSubscript() failed")
+	}
+}
+
+func TestAddNecessaryBreathing(t *testing.T) {
+	if addNecessaryBreathing("οι", SMOOTH) != "οἰ" {
+		t.Fatalf("addNecessaryBreathing() failed: %s", addNecessaryBreathing("οι", SMOOTH))
+	}
+	if addNecessaryBreathing("οί", SMOOTH) != "οἴ" {
+		t.Fatalf("addNecessaryBreathing() failed: %s", addNecessaryBreathing("οί", SMOOTH))
+	}
+	if addNecessaryBreathing("ἐλήλυθας", SMOOTH) != "ἐλήλυθας" {
+		t.Fatalf("addNecessaryBreathing() failed, returned %s", addNecessaryBreathing("ἐλήλυθας", SMOOTH))
+	}
+	if addNecessaryBreathing("άνθρωπε", SMOOTH) != "ἄνθρωπε" {
+		t.Fatalf("addNecessaryBreathing() failed, returned %s", addNecessaryBreathing("άνθρωπε", SMOOTH))
+	}
+	if addNecessaryBreathing("οίδαμεν", SMOOTH) != "οἴδαμεν" {
+		t.Fatalf("addNecessaryBreathing() failed")
+	}
+	if addNecessaryBreathing("οἰ", SMOOTH) != "οἰ" {
+		t.Fatalf("addNecessaryBreathing() failed")
+	}
+	if addNecessaryBreathing("θεός", SMOOTH) != "θεός" {
+		t.Fatalf("addNecessaryBreathing() failed")
 	}
 }
 
@@ -229,6 +256,44 @@ func TestOnsetNucleusCoda(t *testing.T) {
 		}
 	}
 
+	{
+		o, n, c := onsetNucleusCoda("οι")
+		if o != "" {
+			t.Fatalf("OnsetNucleusCoda() failed, got %s", o)
+		}
+		if n != "οι" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+		if c != "" {
+			t.Fatal("OnsetNucleusCoda() failed")
+		}
+	}
+
+	{
+		o, n, c := onsetNucleusCoda("οἰ")
+		if len([]rune(o)) != 1 && []rune(o)[0] != SMOOTH.Rune() {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if n != "οι" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if c != "" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+	}
+
+	{
+		o, n, c := onsetNucleusCoda("οἴ")
+		if len([]rune(o)) != 1 && []rune(o)[0] != SMOOTH.Rune() {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if n != "οί" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if c != "" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+	}
 }
 
 func TestBody(t *testing.T) {
@@ -248,16 +313,16 @@ func TestBody(t *testing.T) {
 	}
 
 	{
-		o := body("ὅ")
-		if o != "ὅ" {
-			t.Fatal("body() failed")
+		o := body("οἴδ")
+		if o != "οἴ" {
+			t.Fatalf("body() failed, returned %s", o)
 		}
 	}
 
 	{
-		o := body("οἴδ")
-		if o != "οἴδ" {
-			t.Fatal("body() failed")
+		o := body("ὅ")
+		if o != "ὅ" {
+			t.Fatalf("body() failed, returned %s", o)
 		}
 	}
 

@@ -194,10 +194,10 @@ func AddDiacritic(base rune, diacritic rune) rune {
 func AddBreathing(ch rune, breathing Breathing) rune {
 	decomposed := []rune(norm.NFD.String(string([]rune{ch})))
 	if len(decomposed) > 1 && decomposed[1] == LONG.Rune() {
-		d := append(append(decomposed[0:2], breathing.Rune()), decomposed[2:]...)
+		d := append([]rune{decomposed[0], decomposed[1], breathing.Rune()}, decomposed[2:]...)
 		return []rune(norm.NFC.String(string(d)))[0]
 	} else {
-		d := append(append(decomposed[0:1], breathing.Rune()), decomposed[1:]...)
+		d := append([]rune{decomposed[0], breathing.Rune()}, decomposed[1:]...)
 		return []rune(norm.NFC.String(string(d)))[0]
 	}
 }
@@ -208,14 +208,21 @@ type RemoveDiacriticFunction func(text []rune) []rune
 // string and returns the string without those diacritics.
 func RemoveDiacritic(diacritics []RuneInterface) RemoveDiacriticFunction {
 	return func(text []rune) []rune {
-		return text
-		/*
-		   return unicodedata.normalize("NFC", "".join(
-		       ch
-		       for ch in unicodedata.normalize("NFD", text)
-		       if ch not in diacritics)
-		   )
-		*/
+		before := []rune(norm.NFD.String(string(text)))
+		after := []rune{}
+		for _, ch := range before {
+			skip := false
+			for _, d := range diacritics {
+				if d.Rune() == ch {
+					skip = true
+				}
+			}
+			if !skip {
+				after = append(after, ch)
+			}
+		}
+
+		return []rune(norm.NFC.String(string(after)))
 	}
 }
 
