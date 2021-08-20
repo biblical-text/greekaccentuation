@@ -214,50 +214,56 @@ func body(s string) string {
 	return o + n
 }
 
-func syllableLength(s string, final string) Length {
-	n := nucleus(s)
+func syllableLength(s string, finalPosition ...bool) Length {
+	n := []rune(nucleus(s)) // Middle part of syllable
 
-	if n == "" {
+	if len(n) == 0 {
 		// TODO: I dont know if a hard fail is important here
 		//raise ValueError("'{}' does not contain a nucleus".format(s))
 		return UNKNOWN
 	}
 
-	/*
-		    r = rime(s)
-		    if len(n) > 1 {
-		        b = "".join(base(ch) for ch in r)
-		        if final is True {
-		            if b in ["αι", "οι"] {
-		                return SHORT
-					} else {
-		                return LONG
-					}
-				} else if final is False {
-		            return LONG
-				} else {
-		            if b in ["αι", "οι"] {
-		                return UNKNOWN
-					} else {
-		                return LONG
-					}
-			} else {
-		        if iotaSubscript(n) {
-		            return LONG
-				} else {
-		            b = base(n)
-		            if b in "εο" or length(n) == SHORT {
-		                return SHORT
-					} else if b in "ηω" or length(n) == LONG {
-		                return LONG
-					} else {  # αιυ
-		                return UNKNOWN
-					}
-				}
-			}
-	*/
+	r := rime(s) // Middle and last part of syllable
 
-	// TODO: Is this right?
+	if len(n) > 1 {
+		var b []rune
+		for _, ch := range []rune(r) {
+			b = append(b, Base(ch))
+		}
+
+		if len(finalPosition) > 0 {
+			if finalPosition[0] {
+				if RunesInList(b, [][]rune{[]rune("αι"), []rune("οι")}) {
+					return SHORT
+				} else {
+					return LONG
+				}
+			} else {
+				return LONG
+			}
+		} else {
+			if RunesInList(b, [][]rune{[]rune("αι"), []rune("οι")}) {
+				return UNKNOWN
+			} else {
+				return LONG
+			}
+		}
+	} else {
+		rn := n[0]
+		if iotaSubscript(rn) == IOTA {
+			return LONG
+		} else {
+			b := Base(rn)
+			if b == 'ε' || b == 'ο' || length(rn) == SHORT {
+				return SHORT
+			} else if b == 'η' || b == 'ω' || length(rn) == LONG {
+				return LONG
+			} else { // αιυ
+				return UNKNOWN
+			}
+		}
+	}
+
 	return UNKNOWN
 }
 

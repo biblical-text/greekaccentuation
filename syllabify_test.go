@@ -120,6 +120,53 @@ func TestSyllableAccent(t *testing.T) {
 	}
 }
 
+func TestIotaSubscript(t *testing.T) {
+	if iotaSubscript('ᾳ') == nil {
+		t.Fatalf("iotaSubscript() failed, should not be nil")
+	}
+	if iotaSubscript('ᾳ') != IOTA {
+		t.Fatalf("iotaSubscript() failed, returned %c", iotaSubscript('ᾳ').Rune())
+	}
+	if iotaSubscript(' ') != nil {
+		t.Fatalf("iotaSubscript() failed, returned %c", iotaSubscript(' ').Rune())
+	}
+	if iotaSubscript('α') != nil {
+		t.Fatalf("iotaSubscript() failed")
+	}
+}
+
+func TestSyllableLength(t *testing.T) {
+	if syllableLength("") != UNKNOWN {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("κός") != SHORT {
+		t.Fatalf("syllableLength() failed, returned %v", syllableLength("κός").Name())
+	}
+	if syllableLength("σω") != LONG {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("τοῦ") != LONG {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("ᾳ") != LONG {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("ναι") != UNKNOWN {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("οἰ", false) != LONG {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("ναι", true) != SHORT {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("ναι", false) != LONG {
+		t.Fatal("syllableLength() failed")
+	}
+	if syllableLength("οἰ", false) != LONG {
+		t.Fatal("syllableLength() failed")
+	}
+}
 func TestOnsetNucleusCoda(t *testing.T) {
 
 	{

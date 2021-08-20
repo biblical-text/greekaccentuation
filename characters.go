@@ -11,16 +11,30 @@ type RuneInterface interface {
 type Breathing rune
 
 const (
-	SMOOTH Breathing = '\u0313'
-	ROUGH  Breathing = '\u0314'
-	PSILI  Breathing = SMOOTH
-	DASIA  Breathing = ROUGH
+	NO_BREATHING Breathing = 0
+	SMOOTH       Breathing = '\u0313'
+	ROUGH        Breathing = '\u0314'
+	PSILI        Breathing = SMOOTH //- GO doesnt handle this well
+	DASIA        Breathing = ROUGH  //- GO doesnt handle this well
 )
 
-var Breathings []RuneInterface = []RuneInterface{SMOOTH, ROUGH, PSILI, DASIA}
+var Breathings []RuneInterface = []RuneInterface{SMOOTH, ROUGH}
 
 func (e Breathing) Rune() rune {
 	return rune(e)
+}
+
+func (e Breathing) Name() string {
+	switch e {
+	case NO_BREATHING:
+		return "NO_BREATHING"
+	case SMOOTH:
+		return "SMOOTH"
+	case ROUGH:
+		return "ROUGH"
+	default:
+		return ""
+	}
 }
 
 func isBreathing(c rune) bool {
@@ -47,6 +61,21 @@ const (
 
 var Accents []RuneInterface = []RuneInterface{ACUTE, GRAVE, CIRCUMFLEX, OXIA, VARIA, PERISPOMENI}
 
+func (e Accent) Name() string {
+	switch e {
+	case NO_ACCENT:
+		return "NO_ACCENT"
+	case ACUTE:
+		return "ACUTE"
+	case GRAVE:
+		return "GRAVE"
+	case CIRCUMFLEX:
+		return "CIRCUMFLEX"
+	default:
+		return ""
+	}
+}
+
 func isAccent(c rune) bool {
 	for a := range Accents {
 		if c == rune(a) {
@@ -67,6 +96,15 @@ const (
 	DIAERESIS Diacritic = '\u0308'
 )
 
+func (e Diacritic) Name() string {
+	switch e {
+	case DIAERESIS:
+		return "DIAERESIS"
+	default:
+		return ""
+	}
+}
+
 var Diacritics []RuneInterface = []RuneInterface{DIAERESIS}
 
 func (e Diacritic) Rune() rune {
@@ -80,7 +118,16 @@ const (
 	YPOGEGRAMMENI Subscript = IOTA
 )
 
-var Subscripts []RuneInterface = []RuneInterface{IOTA, YPOGEGRAMMENI}
+func (e Subscript) Name() string {
+	switch e {
+	case IOTA:
+		return "IOTA"
+	default:
+		return ""
+	}
+}
+
+var Subscripts []RuneInterface = []RuneInterface{IOTA}
 
 func (e Subscript) Rune() rune {
 	return rune(e)
@@ -95,6 +142,17 @@ const (
 )
 
 var Lengths []RuneInterface = []RuneInterface{SHORT, LONG, UNKNOWN}
+
+func (e Length) Name() string {
+	switch e {
+	case SHORT:
+		return "SHORT"
+	case LONG:
+		return "LONG"
+	default:
+		return ""
+	}
+}
 
 func (e Length) Rune() rune {
 	return rune(e)

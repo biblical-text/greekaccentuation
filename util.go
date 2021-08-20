@@ -19,7 +19,7 @@ func RuneInArray(ch rune, list []rune) bool {
 			return true
 		}
 	}
-	return true
+	return false
 }
 
 // RunesHavePrefix checks an item has one of the provided candidates.
