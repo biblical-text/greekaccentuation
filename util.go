@@ -13,6 +13,15 @@ func RunesInList(item []rune, list [][]rune) bool {
 	return false
 }
 
+func RuneInArray(ch rune, list []rune) bool {
+	for _, c := range list {
+		if c == ch {
+			return true
+		}
+	}
+	return true
+}
+
 // RunesHavePrefix checks an item has one of the provided candidates.
 func RunesHavePrefix(item []rune, candidates [][]rune) bool {
 	for _, candidate := range candidates {
