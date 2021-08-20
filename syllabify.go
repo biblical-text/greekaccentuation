@@ -152,48 +152,52 @@ func coda(s string) string {
 	return c
 }
 
-// onsetNucleusCoda splits the parts of a syllable to facilitate accentation
+// onsetNucleusCoda splits the parts of a syllable to facilitate accentation.
+// Returns composed (not decomposed) unicode format
 func onsetNucleusCoda(s string) (string, string, string) {
-	onset := ""
-	nucleus := ""
-	coda := ""
-	// TODO
-	/*
-		    for i, ch := range []rune(s) {
-		        if IsVowel(ch) {
-		            if i == 0 && breathing(ch) {
-		                onset = breathing(ch)
-		                break
-					} else if i == 0 && len(s) > 1 && breathing(s[1]) {
-		                onset = breathing(s[1])
-		                break
-					} else {
-						if i > 0 {
-							onset = s[:i]
-						}
-		                break
-					}
+	letters := []rune(norm.NFC.String(s))
+
+	var onset []rune
+	var nucleus []rune
+	var coda []rune
+
+	li := -1
+	for i, ch := range letters {
+		li = i
+		if IsVowel(ch) {
+			if i == 0 && isBreathing(ch) {
+				onset = letters[0:1]
+				break
+			} else if i == 0 && len(letters) > 1 && isBreathing(letters[1]) {
+				onset = letters[1:2]
+				break
+			} else {
+				if i > 0 {
+					onset = letters[:i]
 				}
+				break
 			}
-		    if onset == "" {
-		        return s, "", ""
-			}
-		    for j, ch := range []rune(s[i:]) {
-		        if !isVowel(ch) && !isBreathing(ch) {
-		            nucleus = s[i:i + j]
-		            coda = s[i + j:]
-		            break
-				}
-			}
-		    if nucleus == "" {
-		        nucleus = s[i:]
-		        coda = ""
-			}
-		    if isinstance(onset, Breathing) {
-		        nucleus = strip_breathing(nucleus)
-			}
-	*/
-	return onset, nucleus, coda
+		}
+	}
+	if len(onset) == 0 || li == -1 {
+		return s, "", ""
+	}
+
+	for j, ch := range letters[li:] {
+		if !IsVowel(ch) && !isBreathing(ch) {
+			nucleus = letters[li : li+j]
+			coda = letters[li+j:]
+			break
+		}
+	}
+	if len(nucleus) == 0 {
+		nucleus = letters[li:]
+	}
+	if len(onset) == 1 && isBreathing(onset[0]) {
+		nucleus = stripBreathing(nucleus)
+	}
+
+	return string(onset), string(nucleus), string(coda)
 }
 
 func rime(s string) string {
@@ -203,17 +207,57 @@ func rime(s string) string {
 
 func body(s string) string {
 	o, n, _ := onsetNucleusCoda(s)
-	// TODO
-	/*
-		if isBreathing(o, Breathing) {
-			return addNecessaryBreathing(n, o)
-		}
-	*/
+
+	if len(o) == 1 && isBreathing([]rune(o)[0]) {
+		return addNecessaryBreathing(n, Breathing([]rune(o)[0]))
+	}
 	return o + n
 }
 
 func syllableLength(s string, final string) Length {
-	// TODO
+	n := nucleus(s)
+
+	if n == "" {
+		// TODO: I dont know if a hard fail is important here
+		//raise ValueError("'{}' does not contain a nucleus".format(s))
+		return UNKNOWN
+	}
+
+	/*
+		    r = rime(s)
+		    if len(n) > 1 {
+		        b = "".join(base(ch) for ch in r)
+		        if final is True {
+		            if b in ["αι", "οι"] {
+		                return SHORT
+					} else {
+		                return LONG
+					}
+				} else if final is False {
+		            return LONG
+				} else {
+		            if b in ["αι", "οι"] {
+		                return UNKNOWN
+					} else {
+		                return LONG
+					}
+			} else {
+		        if iotaSubscript(n) {
+		            return LONG
+				} else {
+		            b = base(n)
+		            if b in "εο" or length(n) == SHORT {
+		                return SHORT
+					} else if b in "ηω" or length(n) == LONG {
+		                return LONG
+					} else {  # αιυ
+		                return UNKNOWN
+					}
+				}
+			}
+	*/
+
+	// TODO: Is this right?
 	return UNKNOWN
 }
 

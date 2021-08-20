@@ -105,24 +105,39 @@ func TestSyllabify(t *testing.T) {
 	//}
 }
 
+func TestSyllableAccent(t *testing.T) {
+	if syllableAccent("") != NO_ACCENT {
+		t.Fatal("syllableAccent() failed")
+	}
+	if syllableAccent("κός") != ACUTE {
+		t.Fatalf("syllableAccent() failed, returned %v", syllableAccent("κός"))
+	}
+	if syllableAccent("ναι") != NO_ACCENT {
+		t.Fatal("syllableAccent() failed")
+	}
+	if syllableAccent("φῶς") != CIRCUMFLEX {
+		t.Fatal("syllableAccent() failed")
+	}
+}
+
 func TestOnsetNucleusCoda(t *testing.T) {
 
 	{
-		o := onset("κ")
+		o := onset("κός")
 		if o != "κ" {
 			t.Fatal("Onset() failed")
 		}
 	}
 
 	{
-		n := nucleus("ό")
+		n := nucleus("κός")
 		if n != "ό" {
-			t.Fatal("Nucleus() failed")
+			t.Fatalf("Nucleus() failed, returned %s", n)
 		}
 	}
 
 	{
-		c := coda("ς")
+		c := coda("κός")
 		if c != "ς" {
 			t.Fatal("Coda() failed")
 		}
@@ -134,7 +149,7 @@ func TestOnsetNucleusCoda(t *testing.T) {
 			t.Fatal("OnsetNucleusCoda() failed")
 		}
 		if n != "ό" {
-			t.Fatal("OnsetNucleusCoda() failed")
+			t.Fatalf("OnsetNucleusCoda() failed, returned %s - %s - %s", o, n, c)
 		}
 		if c != "ς" {
 			t.Fatal("OnsetNucleusCoda() failed")
@@ -164,6 +179,38 @@ func TestOnsetNucleusCoda(t *testing.T) {
 		}
 		if c != "" {
 			t.Fatal("OnsetNucleusCoda() failed")
+		}
+	}
+
+}
+
+func TestBody(t *testing.T) {
+
+	{
+		o := body("κός")
+		if o != "κό" {
+			t.Fatal("body() failed")
+		}
+	}
+
+	{
+		o := body("ό")
+		if o != "ό" {
+			t.Fatal("body() failed")
+		}
+	}
+
+	{
+		o := body("ὅ")
+		if o != "ὅ" {
+			t.Fatal("body() failed")
+		}
+	}
+
+	{
+		o := body("οἴδ")
+		if o != "οἴδ" {
+			t.Fatal("body() failed")
 		}
 	}
 

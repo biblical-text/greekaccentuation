@@ -1,8 +1,6 @@
 package greekaccentuation
 
 import (
-	"strings"
-
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -48,6 +46,16 @@ const (
 )
 
 var Accents []RuneInterface = []RuneInterface{ACUTE, GRAVE, CIRCUMFLEX, OXIA, VARIA, PERISPOMENI}
+
+func isAccent(c rune) bool {
+	for a := range Accents {
+		if c == rune(a) {
+			return true
+		}
+
+	}
+	return false
+}
 
 func (e Accent) Rune() rune {
 	return rune(e)
@@ -136,12 +144,12 @@ func AddBreathing(ch rune, breathing Breathing) rune {
 	}
 }
 
-type RemoveDiacriticFunction func(text string) string
+type RemoveDiacriticFunction func(text []rune) []rune
 
 // Given an Enum of Unicode diacritics, return a function that takes a
 // string and returns the string without those diacritics.
 func RemoveDiacritic(diacritics []RuneInterface) RemoveDiacriticFunction {
-	return func(text string) string {
+	return func(text []rune) []rune {
 		return text
 		/*
 		   return unicodedata.normalize("NFC", "".join(
@@ -169,10 +177,10 @@ var stripLength = RemoveDiacritic(Lengths)
 
 // If a circumflex, no need for macron indicating length
 func removeRedundantMacron(word string) string {
-	decomposed := norm.NFD.String(word)
+	decomposed := []rune(norm.NFD.String(string(word)))
 
-	if strings.Index(decomposed, "\u0304\u0342") >= 0 {
-		return stripLength(word)
+	if RuneStringHasInfix(decomposed, []rune{'\u0304', '\u0342'}) {
+		return string(stripLength(decomposed))
 	} else {
 		return word
 	}

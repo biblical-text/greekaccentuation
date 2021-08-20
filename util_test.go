@@ -44,6 +44,30 @@ func TestRuneStringHasPrefix(t *testing.T) {
 	}
 }
 
+func TestRuneStringHasInfix(t *testing.T) {
+	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("αχ")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("χ")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("ρφ")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+	if RuneStringHasInfix([]rune("αχαρφ"), []rune("ρεαιφ")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+	if RuneStringHasInfix([]rune("αχαρφ"), []rune("ι")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+	if !RuneStringHasInfix([]rune(""), []rune("")) {
+		t.Fatal("RuneStringHasInfix() failed")
+	}
+}
+
 func TestRunesHavePrefix(t *testing.T) {
 	if !RunesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("αχ")}) {
 		t.Fatal("RuneStringHasPrefix() failed")

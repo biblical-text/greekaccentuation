@@ -47,9 +47,9 @@ func TestAddBreathing(t *testing.T) {
 }
 
 func TestStripLength(t *testing.T) {
-	if stripLength(Recessive("δεικνῡς", true, false)) != "δείκνυς" {
+	if string(stripLength([]rune(Recessive("δεικνῡς", true, false)))) != "δείκνυς" {
 		t.Fatalf("StripLength() failed. Returned: %v",
-			stripLength(Recessive("δεικνῡς", true, false)))
+			string(stripLength([]rune(Recessive("δεικνῡς", true, false)))))
 	}
 }
 func TestRecessive(t *testing.T) {
