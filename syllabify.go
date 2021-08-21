@@ -226,8 +226,9 @@ func rime(s string) string {
 
 func body(s string) string {
 	o, n, _ := onsetNucleusCoda(s)
-	if len(o) > 0 && breathing([]rune(o)[0]) != nil {
-		return addNecessaryBreathing(n, Breathing([]rune(o)[0]))
+	ro := []rune(o)
+	if len(ro) == 1 && breathing(ro[0]) != nil {
+		return addNecessaryBreathing(n, Breathing(breathing(ro[0]).Rune()))
 	}
 	return o + n
 }
