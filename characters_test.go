@@ -25,13 +25,17 @@ func TestBase(t *testing.T) {
 }
 
 func TestAddDiacritic(t *testing.T) {
-	if AddDiacritic('α', IOTA.Rune()) != 'ᾳ' {
+	if string(AddDiacritic([]rune("α"), IOTA.Rune())) != "ᾳ" {
 		t.Fatalf("AddDiacritic() failed. Returned: %v",
-			string(AddDiacritic('α', IOTA.Rune())))
+			string(AddDiacritic([]rune{'α'}, IOTA.Rune())))
 	}
-	if AddDiacritic(AddDiacritic('ο', ROUGH.Rune()), ACUTE.Rune()) != 'ὅ' {
+	if string(AddDiacritic(AddDiacritic([]rune{'ο'}, ROUGH.Rune()), ACUTE.Rune())) != "ὅ" {
 		t.Fatalf("AddDiacritic() failed. Returned: %v",
-			string(AddDiacritic(AddDiacritic('ο', ROUGH.Rune()), ACUTE.Rune())))
+			string(AddDiacritic(AddDiacritic([]rune{'ο'}, ROUGH.Rune()), ACUTE.Rune())))
+	}
+	if string(AddDiacritic([]rune("ου"), CIRCUMFLEX.Rune())) != "οῦ" {
+		t.Fatalf("AddDiacritic() failed. Returned: %v",
+			string(AddDiacritic([]rune("ου"), CIRCUMFLEX.Rune())))
 	}
 }
 

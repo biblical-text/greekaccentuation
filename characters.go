@@ -185,9 +185,8 @@ func ExtractDiacritic(diacritics []RuneInterface, unknownValue RuneInterface) Ex
 }
 
 // AddDiacritic attaches the specified diacritic to the specified character
-func AddDiacritic(base rune, diacritic rune) rune {
-	c := []rune(norm.NFC.String(string([]rune{base, diacritic})))
-	return c[0]
+func AddDiacritic(base []rune, diacritic rune) []rune {
+	return []rune(norm.NFC.String(string(append(base, diacritic))))
 }
 
 // AddBreathing attaches the specified breathing to a character
