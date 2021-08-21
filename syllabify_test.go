@@ -294,6 +294,20 @@ func TestOnsetNucleusCoda(t *testing.T) {
 			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
 		}
 	}
+
+	{
+		o, n, c := onsetNucleusCoda("ὅ")
+		if len([]rune(o)) != 1 && []rune(o)[0] != SMOOTH.Rune() {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if n != "ό" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if c != "" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+	}
+
 }
 
 func TestBody(t *testing.T) {
