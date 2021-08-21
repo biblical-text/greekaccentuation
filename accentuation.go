@@ -68,33 +68,31 @@ func (e Accentuation) Character() Accent {
 
 // SyllableAddAccent places an accent on the correct location
 // within a syllable
-func SyllableAddAccent(s string, a Accent) string {
-	// TODO
-	/*
-		o, n, c := onsetNucleusCoda(s)
-		if isBreathing(o) {
-			return AddDiacritic(AddDiacritic(n, o), a) + c
-		} else {
-			return o + string(AddDiacritic(n, a)) + c
-		}
+func syllableAddAccent(s string, a Accent) string {
+	o, n, c := onsetNucleusCoda(s)
+	ro := []rune(o)
+	rn := []rune(n)
+	if len(ro) == 1 && breathing(ro[0]) != nil {
+		return string(AddDiacritic(AddDiacritic(rn, ro[0]), a.Rune())) + c
+	} else {
+		return o + string(AddDiacritic(rn, a.Rune())) + c
+	}
 
-	*/
-	return s
 }
 
 // AddAccentuation takes the syllables of a word and ....
-func AddAccentuation(s []string, accentuation Accentuation) string {
-	// TODO
-	/*
-		pos, accent := accentuation.Value()
-		final := []string{""}
-		if pos > 1 {
-			final = s[1-pos:]
-		}
-		parts := append(s[:-pos], append(SyllableAddAccent(s[-pos], accent), final...)...)
-		return strings.Join(parts, "")
-	*/
-	return ""
+func addAccentuation(s []string, accentuation Accentuation) string {
+	pos, accent := accentuation.Value()
+	pre := ""
+	final := ""
+	idx := len(s) - pos // Place the accent on this syllable
+	if idx+1 < len(s) { // a b c   3
+		final = strings.Join(s[idx+1:], "")
+	}
+	if idx > 0 {
+		pre = strings.Join(s[0:idx], "")
+	}
+	return pre + syllableAddAccent(s[len(s)-pos], accent) + final
 }
 
 func DisplayAccentuation(accentuation Accentuation) string {
@@ -102,33 +100,33 @@ func DisplayAccentuation(accentuation Accentuation) string {
 }
 
 func MakeOxytone(word string) string {
-	return AddAccentuation(Syllabify(word), OXYTONE)
+	return addAccentuation(Syllabify(word), OXYTONE)
 }
 
 func MakeParoxytone(word string) string {
-	return AddAccentuation(Syllabify(word), PAROXYTONE)
+	return addAccentuation(Syllabify(word), PAROXYTONE)
 }
 
 func MakeProparoxytone(word string) string {
-	return AddAccentuation(Syllabify(word), PROPAROXYTONE)
+	return addAccentuation(Syllabify(word), PROPAROXYTONE)
 }
 
 func MakePerispomenon(word string) string {
 	syllables := Syllabify(word)
 	for _, i := range possibleAccentuations(syllables, true, false) {
 		if i == PERISPOMENON {
-			return AddAccentuation(syllables, PERISPOMENON)
+			return addAccentuation(syllables, PERISPOMENON)
 		}
 	}
-	return AddAccentuation(syllables, OXYTONE)
+	return addAccentuation(syllables, OXYTONE)
 }
 
 func MakeProperispomenon(word string) string {
 	syllables := Syllabify(word)
 	if accentationInSet(PROPERISPOMENON, possibleAccentuations(syllables, true, false)) {
-		return AddAccentuation(syllables, PROPERISPOMENON)
+		return addAccentuation(syllables, PROPERISPOMENON)
 	}
-	return AddAccentuation(syllables, PAROXYTONE)
+	return addAccentuation(syllables, PAROXYTONE)
 }
 
 func GetAccentuation(w string) Accentuation {
@@ -160,40 +158,37 @@ func GetAccentuation(w string) Accentuation {
 //func possibleAccentuations(s []string, treat_final_AI_OI_short=True, default_short=False) {
 func possibleAccentuations(s []string, treat_final_AI_OI_short bool, defaultShort bool) []Accentuation {
 	var yield []Accentuation
-	//TODO
-	/*
 
-		ultima_length := SyllableLength(s[-1], treat_final_AI_OI_short)
-		var penult_length string
-		if len(s) >= 2 {
-			penult_length = SyllableLength(s[-2], False)
-		}
-		if ultima_length == Length.UNKNOWN && default_short {
-			ultima_length = Length.SHORT
-		}
-		if penult_length == Length.UNKNOWN && default_short {
-			penult_length = Length.SHORT
-		}
+	ultimaLength := syllableLength(s[len(s)-1], treat_final_AI_OI_short)
+	var penultLength Length
+	if len(s) >= 2 {
+		penultLength = syllableLength(s[len(s)-2], false)
+	}
+	if ultimaLength == UNKNOWN && defaultShort {
+		ultimaLength = SHORT
+	}
+	if penultLength == UNKNOWN && defaultShort {
+		penultLength = SHORT
+	}
 
-		yield = append(yield, OXYTONE)
+	yield = append(yield, OXYTONE)
 
-		if !(ultima_length == Length.SHORT) {
-			yield = append(yield, PERISPOMENON)
-		}
+	if !(ultimaLength == SHORT) {
+		yield = append(yield, PERISPOMENON)
+	}
 
-		if len(s) >= 2 && !(penult_length == Length.LONG && ultima_length == Length.SHORT) {
-			yield = append(yield, PAROXYTONE)
-		}
+	if len(s) >= 2 && !(penultLength == LONG && ultimaLength == SHORT) {
+		yield = append(yield, PAROXYTONE)
+	}
 
-		if len(s) >= 2 && !(penult_length == Length.SHORT || ultima_length == Length.LONG) {
-			yield = append(yield, PROPERISPOMENON)
-		}
+	if len(s) >= 2 && !(penultLength == SHORT || ultimaLength == LONG) {
+		yield = append(yield, PROPERISPOMENON)
+	}
 
-		if len(s) >= 3 && !(ultima_length == Length.LONG) {
-			yield = append(yield, PROPAROXYTONE)
-		}
+	if len(s) >= 3 && !(ultimaLength == LONG) {
+		yield = append(yield, PROPAROXYTONE)
+	}
 
-	*/
 	return yield
 }
 
@@ -212,7 +207,7 @@ func Recessive(w string, treat_final_AI_OI_short bool, default_short bool) strin
 	if len(ll) == 0 {
 		return w
 	}
-	return pre + AddAccentuation(s, ll[0])
+	return pre + addAccentuation(s, ll[0])
 }
 
 //func OnPenult(w, default_short=False) {
@@ -226,13 +221,13 @@ func OnPenult(w string, default_short bool) string {
 	s := Syllabify(w)
 	accentuations := possibleAccentuations(s, default_short, false)
 	if accentationInSet(PROPERISPOMENON, accentuations) {
-		return pre + AddAccentuation(s, PROPERISPOMENON)
+		return pre + addAccentuation(s, PROPERISPOMENON)
 	}
 	if accentationInSet(PAROXYTONE, accentuations) {
-		return pre + AddAccentuation(s, PAROXYTONE)
+		return pre + addAccentuation(s, PAROXYTONE)
 	}
 	if accentationInSet(OXYTONE, accentuations) { // fall back to an oxytone if necessary
-		return pre + AddAccentuation(s, OXYTONE)
+		return pre + addAccentuation(s, OXYTONE)
 	}
 	// TODO: It is unclear what happens in the python code here. Guess something.
 	return w
