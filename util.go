@@ -1,19 +1,19 @@
 package greekaccentuation
 
-func RunesInList(item []rune, list [][]rune) bool {
+func runesInList(item []rune, list [][]rune) bool {
 	l := len(item)
 	for _, i := range list {
 		if len(i) != l {
 			continue
 		}
-		if RuneStringMatch(item, i) {
+		if runeStringMatch(item, i) {
 			return true
 		}
 	}
 	return false
 }
 
-func RuneInArray(ch rune, list []rune) bool {
+func runeInArray(ch rune, list []rune) bool {
 	for _, c := range list {
 		if c == ch {
 			return true
@@ -23,9 +23,9 @@ func RuneInArray(ch rune, list []rune) bool {
 }
 
 // RunesHavePrefix checks an item has one of the provided candidates.
-func RunesHavePrefix(item []rune, candidates [][]rune) bool {
+func runesHavePrefix(item []rune, candidates [][]rune) bool {
 	for _, candidate := range candidates {
-		if RuneStringHasPrefix(item, candidate) {
+		if runeStringHasPrefix(item, candidate) {
 			return true
 		}
 	}
@@ -33,7 +33,7 @@ func RunesHavePrefix(item []rune, candidates [][]rune) bool {
 }
 
 // RuneStringHasPrefix checks if an item has a required prefix.
-func RuneStringHasPrefix(item []rune, candidate []rune) bool {
+func runeStringHasPrefix(item []rune, candidate []rune) bool {
 	if len(item) < len(candidate) {
 		return false
 	}
@@ -46,7 +46,7 @@ func RuneStringHasPrefix(item []rune, candidate []rune) bool {
 }
 
 // RuneStringHasInfix checks if a rune array contains a string of runes
-func RuneStringHasInfix(item []rune, candidate []rune) bool {
+func runeStringHasInfix(item []rune, candidate []rune) bool {
 	itemLength := len(item)
 	if itemLength < len(candidate) {
 		return false
@@ -73,7 +73,7 @@ func RuneStringHasInfix(item []rune, candidate []rune) bool {
 }
 
 // RuneStringMatch returns true if two rune strings exactly match
-func RuneStringMatch(a, b []rune) bool {
+func runeStringMatch(a, b []rune) bool {
 	if len(a) != len(b) {
 		return false
 	}

@@ -172,11 +172,11 @@ type ExtractDiacriticFunction func(ch rune) RuneInterface
 // Unicode character and returns the member of the collection the character
 // has (or None).
 //func ExtractDiacritic(Enum, unknownValue=None) ExtractDiacriticFunction {
-func ExtractDiacritic(diacritics []RuneInterface, unknownValue RuneInterface) ExtractDiacriticFunction {
+func extractDiacritic(diacritics []RuneInterface, unknownValue RuneInterface) ExtractDiacriticFunction {
 	return func(ch rune) RuneInterface {
 		decomposedForm := []rune(norm.NFD.String(string([]rune{ch})))
 		for _, diacritic := range diacritics {
-			if RuneInArray(diacritic.Rune(), decomposedForm) {
+			if runeInArray(diacritic.Rune(), decomposedForm) {
 				return diacritic
 			}
 		}
@@ -205,7 +205,7 @@ type RemoveDiacriticFunction func(text []rune) []rune
 
 // Given an Enum of Unicode diacritics, return a function that takes a
 // string and returns the string without those diacritics.
-func RemoveDiacritic(diacritics []RuneInterface) RemoveDiacriticFunction {
+func removeDiacritic(diacritics []RuneInterface) RemoveDiacriticFunction {
 	return func(text []rune) []rune {
 		before := []rune(norm.NFD.String(string(text)))
 		after := []rune{}
@@ -225,25 +225,25 @@ func RemoveDiacritic(diacritics []RuneInterface) RemoveDiacriticFunction {
 	}
 }
 
-var breathing = ExtractDiacritic(Breathings, nil)
-var stripBreathing = RemoveDiacritic(Breathings)
+var breathing = extractDiacritic(Breathings, nil)
+var stripBreathing = removeDiacritic(Breathings)
 
-var accent = ExtractDiacritic(Accents, nil)
-var stripAccents = RemoveDiacritic(Accents)
+var accent = extractDiacritic(Accents, nil)
+var stripAccents = removeDiacritic(Accents)
 
-var diaeresis = ExtractDiacritic(Diacritics, nil)
+var diaeresis = extractDiacritic(Diacritics, nil)
 
-var iotaSubscript = ExtractDiacritic(Subscripts, nil)
+var iotaSubscript = extractDiacritic(Subscripts, nil)
 var ypogegrammeni = iotaSubscript
 
-var length = ExtractDiacritic(Lengths, UNKNOWN)
-var stripLength = RemoveDiacritic(Lengths)
+var length = extractDiacritic(Lengths, UNKNOWN)
+var stripLength = removeDiacritic(Lengths)
 
 // If a circumflex, no need for macron indicating length
 func removeRedundantMacron(word string) string {
 	decomposed := []rune(norm.NFD.String(string(word)))
 
-	if RuneStringHasInfix(decomposed, []rune{'\u0304', '\u0342'}) {
+	if runeStringHasInfix(decomposed, []rune{'\u0304', '\u0342'}) {
 		return string(stripLength(decomposed))
 	} else {
 		return word

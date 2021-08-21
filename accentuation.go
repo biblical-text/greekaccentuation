@@ -24,6 +24,29 @@ func (a ByAccentReverse) Len() int           { return len(a) }
 func (a ByAccentReverse) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByAccentReverse) Less(i, j int) bool { return int(a[i]) > int(a[j]) }
 
+func findMatchingAccentuation(position int, accent Accent) Accentuation {
+	for _, a := range Accentuations {
+		pos, acc := a.Value()
+		if pos != position {
+			continue
+		}
+		if acc != accent {
+			continue
+		}
+		return a
+	}
+	return NO_ACCENTUATION
+}
+
+func accentuationInSet(a Accentuation, set []Accentuation) bool {
+	for _, s := range set {
+		if a == s {
+			return true
+		}
+	}
+	return false
+}
+
 func (e Accentuation) Value() (int, Accent) {
 	switch e {
 	case OXYTONE:
@@ -129,7 +152,7 @@ func MakeProperispomenon(word string) string {
 	return addAccentuation(syllables, PAROXYTONE)
 }
 
-func GetAccentuation(w string) Accentuation {
+func getAccentuation(w string) Accentuation {
 	u := syllableAccent(ultima(w))
 	if u == ACUTE {
 		return OXYTONE
@@ -237,34 +260,37 @@ func OnPenult(w string, default_short bool) string {
 func Persistent(w string, lemma string, defaultShort bool) string {
 	w = strings.ReplaceAll(w, "|", "")
 
-	/*
-	   accentuation := GetAccentuation(lemma)
-	   if accentuation == NO_ACCENTUATION {
-	       return ""
-	   }
+	// Get accentuation of the lemma
+	accentuation := getAccentuation(lemma)
+	if accentuation == NO_ACCENTUATION {
+		return ""
+	}
+	place, accent := accentuation.Value()
 
-	   place, accent := accentuation.Value()
-	   s := Syllabify(w)
-	   possible := PossibleAccentuations(s, default_short)
-	   place2 := len(s) - len(Syllabify(lemma)) + place
-	   accent_pair := (place2, accent)
-	   if accent_pair not in possible {
-	       if accent == ACUTE and (place2, CIRCUMFLEX) in possible {
-	           accent_pair = (place2, CIRCUMFLEX)
-	       } else if accent == CIRCUMFLEX && (place2, ACUTE) in possible) {
-	           accent_pair = (place2, Accent.ACUTE)
-	       } else {
-	           for i := 1; i <= 4; i++ {
-	               if (place2 - i, ACUTE) in possible {
-	                   accent_pair = (place2 - i, ACUTE)
-	                   break
-	               }
-	           }
-	       }
-	   }
-	   return AddAccentuation(s, Accentuation(accent_pair))
-	*/
-	return "" //todo
+	s := Syllabify(w)
+	possible := possibleAccentuations(s, false, defaultShort)
+	place2 := len(s) - len(Syllabify(lemma)) + place
+	accentPair := findMatchingAccentuation(place2, accent)
+
+	if !accentuationInSet(accentPair, possible) {
+		opt1 := findMatchingAccentuation(place2, CIRCUMFLEX)
+		opt2 := findMatchingAccentuation(place2, ACUTE)
+		if accent == ACUTE && accentuationInSet(opt1, possible) {
+			accentPair = opt1
+		} else if accent == CIRCUMFLEX && accentuationInSet(opt2, possible) {
+			accentPair = opt2
+		} else {
+			for i := 1; i <= 4; i++ {
+				opt := findMatchingAccentuation(place2-i, ACUTE)
+				if accentuationInSet(opt, possible) {
+					accentPair = opt
+					break
+				}
+			}
+		}
+	}
+
+	return addAccentuation(s, Accentuation(accentPair))
 }
 
 func accentationInSet(acentation Accentuation, set []Accentuation) bool {

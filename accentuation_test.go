@@ -1,7 +1,6 @@
 package greekaccentuation
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -33,7 +32,6 @@ func TestPossibleAccentuations(t *testing.T) {
 		accentuations := possibleAccentuations(s, true, false)
 		possible := []string{}
 		for _, a := range accentuations {
-			fmt.Println("  possible accent:", a, a.Name())
 			possible = append(possible, addAccentuation(s, a))
 		}
 		expected := []string{"εγινωσκού", "εγινωσκοῦ", "εγινώσκου"}

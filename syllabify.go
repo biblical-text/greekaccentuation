@@ -22,7 +22,7 @@ func IsVowel(ch rune) bool {
 func isDipthong(a, b rune) bool {
 	a = unicode.ToLower(a)
 	b = unicode.ToLower(b)
-	return RunesInList([]rune{a, b}, [][]rune{
+	return runesInList([]rune{a, b}, [][]rune{
 		[]rune("αι"),
 		[]rune("ει"),
 		[]rune("οι"),
@@ -38,7 +38,7 @@ func isDipthong(a, b rune) bool {
 // combination would be considered valid.
 func isValidConsonantCluster(ch rune, syllable []rune) bool {
 	candidate := append([]rune{ch}, syllable...)
-	return RunesHavePrefix(candidate, [][]rune{
+	return runesHavePrefix(candidate, [][]rune{
 		[]rune("βδ"), []rune("βλ"), []rune("βρ"),
 		[]rune("γλ"), []rune("γν"), []rune("γρ"),
 		[]rune("δρ"),
@@ -252,7 +252,7 @@ func syllableLength(s string, finalPosition ...bool) Length {
 
 		if len(finalPosition) > 0 {
 			if finalPosition[0] {
-				if RunesInList(b, [][]rune{[]rune("αι"), []rune("οι")}) {
+				if runesInList(b, [][]rune{[]rune("αι"), []rune("οι")}) {
 					return SHORT
 				} else {
 					return LONG
@@ -261,7 +261,7 @@ func syllableLength(s string, finalPosition ...bool) Length {
 				return LONG
 			}
 		} else {
-			if RunesInList(b, [][]rune{[]rune("αι"), []rune("οι")}) {
+			if runesInList(b, [][]rune{[]rune("αι"), []rune("οι")}) {
 				return UNKNOWN
 			} else {
 				return LONG
@@ -282,8 +282,6 @@ func syllableLength(s string, finalPosition ...bool) Length {
 			}
 		}
 	}
-
-	return UNKNOWN
 }
 
 func syllableAccent(s string) Accent {
@@ -329,7 +327,7 @@ func addNecessaryBreathing(w string, breathing Breathing) string {
 		var pre []rune
 		var post []rune
 		for i, ch := range n {
-			if RuneInArray(unicode.ToLower(Base(ch)), []rune("αεηιουω")) {
+			if runeInArray(unicode.ToLower(Base(ch)), []rune("αεηιουω")) {
 				lastVowel = i
 			}
 		}

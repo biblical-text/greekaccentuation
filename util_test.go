@@ -3,79 +3,79 @@ package greekaccentuation
 import "testing"
 
 func TestRunesInList(t *testing.T) {
-	if !RunesInList([]rune("αχ"), [][]rune{[]rune("αχα"), []rune("αχ")}) {
+	if !runesInList([]rune("αχ"), [][]rune{[]rune("αχα"), []rune("αχ")}) {
 		t.Fatal("RunesInListIsDipthong() failed")
 	}
-	if RunesInList([]rune("αχ"), [][]rune{[]rune("αχα"), []rune("αχι")}) {
+	if runesInList([]rune("αχ"), [][]rune{[]rune("αχα"), []rune("αχι")}) {
 		t.Fatal("RunesInListIsDipthong() failed")
 	}
 }
 
 func TestRuneStringMatch(t *testing.T) {
-	if !RuneStringMatch([]rune("αχ"), []rune("αχ")) {
+	if !runeStringMatch([]rune("αχ"), []rune("αχ")) {
 		t.Fatal("RunesStringMatch() failed")
 	}
-	if RuneStringMatch([]rune("αχ"), []rune("αχα")) {
+	if runeStringMatch([]rune("αχ"), []rune("αχα")) {
 		t.Fatal("RunesStringMatch() failed")
 	}
-	if RuneStringMatch([]rune("αχ"), []rune("αα")) {
+	if runeStringMatch([]rune("αχ"), []rune("αα")) {
 		t.Fatal("RunesStringMatch() failed")
 	}
 }
 
 func TestRuneStringHasPrefix(t *testing.T) {
-	if !RuneStringHasPrefix([]rune("αχαρφ"), []rune("αχ")) {
+	if !runeStringHasPrefix([]rune("αχαρφ"), []rune("αχ")) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if !RuneStringHasPrefix([]rune("αχ"), []rune("α")) {
+	if !runeStringHasPrefix([]rune("αχ"), []rune("α")) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if !RuneStringHasPrefix([]rune("αχ"), []rune("")) {
+	if !runeStringHasPrefix([]rune("αχ"), []rune("")) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if RuneStringHasPrefix([]rune("αχ"), []rune("ααχα")) {
+	if runeStringHasPrefix([]rune("αχ"), []rune("ααχα")) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if RuneStringHasPrefix([]rune("αχ"), []rune("αεφφ")) {
+	if runeStringHasPrefix([]rune("αχ"), []rune("αεφφ")) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if RuneStringHasPrefix([]rune("βχ"), []rune("α")) {
+	if runeStringHasPrefix([]rune("βχ"), []rune("α")) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
 }
 
 func TestRuneStringHasInfix(t *testing.T) {
-	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("")) {
+	if !runeStringHasInfix([]rune("αχαρφ"), []rune("")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
-	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("αχ")) {
+	if !runeStringHasInfix([]rune("αχαρφ"), []rune("αχ")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
-	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("χ")) {
+	if !runeStringHasInfix([]rune("αχαρφ"), []rune("χ")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
-	if !RuneStringHasInfix([]rune("αχαρφ"), []rune("ρφ")) {
+	if !runeStringHasInfix([]rune("αχαρφ"), []rune("ρφ")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
-	if RuneStringHasInfix([]rune("αχαρφ"), []rune("ρεαιφ")) {
+	if runeStringHasInfix([]rune("αχαρφ"), []rune("ρεαιφ")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
-	if RuneStringHasInfix([]rune("αχαρφ"), []rune("ι")) {
+	if runeStringHasInfix([]rune("αχαρφ"), []rune("ι")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
-	if !RuneStringHasInfix([]rune(""), []rune("")) {
+	if !runeStringHasInfix([]rune(""), []rune("")) {
 		t.Fatal("RuneStringHasInfix() failed")
 	}
 }
 
 func TestRunesHavePrefix(t *testing.T) {
-	if !RunesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("αχ")}) {
+	if !runesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("αχ")}) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if RunesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("χα")}) {
+	if runesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("χα")}) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
-	if !RunesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("χα"), []rune("αχ")}) {
+	if !runesHavePrefix([]rune("αχαρφ"), [][]rune{[]rune("χα"), []rune("αχ")}) {
 		t.Fatal("RuneStringHasPrefix() failed")
 	}
 }
