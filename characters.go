@@ -229,7 +229,7 @@ var breathing = extractDiacritic(Breathings, nil)
 var stripBreathing = removeDiacritic(Breathings)
 
 var accent = extractDiacritic(Accents, nil)
-var stripAccents = removeDiacritic(Accents)
+var StripAccents = removeDiacritic(Accents)
 
 var diaeresis = extractDiacritic(Diacritics, nil)
 

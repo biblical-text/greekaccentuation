@@ -64,6 +64,13 @@ func TestPersistent(t *testing.T) {
 	if Persistent("Ααρων", "Ααρων", false) != "" {
 		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ααρων", "Ααρων", false))
 	}
+	if Persistent("Ἀαρων", "Ἀαρών", false) != "Ἀαρών" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ἀαρων", "Ἀαρών", false))
+	}
+	// Missing breathing causes panic
+	//if Persistent("ααρων", "ἀαρών", false) != "ἀαρών" {
+	//	t.Fatalf("Persistent() failed. Returned %s", Persistent("ααρων", "Ἀαρών", false))
+	//}
 
 }
 

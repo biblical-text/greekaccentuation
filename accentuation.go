@@ -296,7 +296,6 @@ func Persistent(word string, lemma string, defaultShort bool) string {
 			}
 		}
 	}
-
 	return addAccentuation(s, Accentuation(accentPair))
 }
 
