@@ -105,6 +105,9 @@ func syllableAddAccent(s string, a Accent) string {
 
 // AddAccentuation takes the syllables of a word and ....
 func addAccentuation(s []string, accentuation Accentuation) string {
+	if len(s) == 0 {
+		return ""
+	}
 	pos, accent := accentuation.Value()
 	pre := ""
 	final := ""

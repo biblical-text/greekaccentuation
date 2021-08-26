@@ -115,7 +115,6 @@ func Syllabify(word string) []string {
 	result = append([]string{string(currentSyllable)}, result...)
 	for i, _ := range result {
 		result[i] = norm.NFC.String(result[i])
-
 	}
 	return result
 }
