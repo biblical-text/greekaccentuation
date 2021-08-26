@@ -72,6 +72,10 @@ func TestPersistent(t *testing.T) {
 	//	t.Fatalf("Persistent() failed. Returned %s", Persistent("ααρων", "Ἀαρών", false))
 	//}
 
+	if Persistent("Ἰαννης", "Ἰάννης", false) != "Ἰάννης" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ἰαννης", "Ἰάννης", false))
+	}
+
 }
 
 func stringArrayMatch(a, b []string) bool {
