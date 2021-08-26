@@ -60,6 +60,11 @@ func TestPersistent(t *testing.T) {
 	if Persistent("καταβαινον", "καταβαίνων", false) != "καταβαῖνον" {
 		t.Fatalf("Persistent() failed.")
 	}
+	// If unaccented, return a blank string. (Why?)
+	if Persistent("Ααρων", "Ααρων", false) != "" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ααρων", "Ααρων", false))
+	}
+
 }
 
 func stringArrayMatch(a, b []string) bool {

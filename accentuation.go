@@ -256,7 +256,8 @@ func OnPenult(w string, default_short bool) string {
 	return w
 }
 
-// Persistent returns the accented form of a word.
+// Persistent returns the accented form of a word. Returns an empty string
+// if the dictionary entry contains no accent.
 //func Persistent(w string, lemma string, default_short=False) {
 func Persistent(word string, lemma string, defaultShort bool) string {
 	w := strings.ReplaceAll(word, "|", "")
@@ -264,6 +265,8 @@ func Persistent(word string, lemma string, defaultShort bool) string {
 	// Get accentuation of the lemma
 	accentuation := getAccentuation(lemma)
 	if accentuation == NO_ACCENTUATION {
+		// Why was this behaviour chosen? In this case I would prefer to
+		// return an unaccented string for all alternate forms.
 		return ""
 	}
 	place, accent := accentuation.Value()
