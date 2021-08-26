@@ -18,6 +18,10 @@ func TestSyllableAddAccent(t *testing.T) {
 		t.Fatalf("syllableAddAccent() failed. Returned: %v",
 			syllableAddAccent("ου", CIRCUMFLEX))
 	}
+	if syllableAddAccent("ἀν", ACUTE) != "ἄν" {
+		t.Fatalf("syllableAddAccent() failed. Returned: %v",
+			syllableAddAccent("ἀν", ACUTE))
+	}
 }
 
 func TestAddAccentuation(t *testing.T) {
@@ -25,7 +29,12 @@ func TestAddAccentuation(t *testing.T) {
 		t.Fatalf("AddAccentuation() failed. %v != %v", "θεός",
 			addAccentuation(Syllabify("θεος"), OXYTONE))
 	}
+	if addAccentuation(Syllabify("ἀνθρωπος"), PROPAROXYTONE) != "ἄνθρωπος" {
+		t.Fatalf("AddAccentuation() failed. ἄνθρωπος != %v",
+			addAccentuation(Syllabify("ἄνθρωπος"), PROPAROXYTONE))
+	}
 }
+
 func TestPossibleAccentuations(t *testing.T) {
 	{
 		s := Syllabify("εγινωσκου")
@@ -38,6 +47,18 @@ func TestPossibleAccentuations(t *testing.T) {
 		if !stringArrayMatch(possible, expected) {
 			t.Fatalf("possibleAccentuations() failed. %v != %v", possible, expected)
 		}
+	}
+}
+
+func TestPersistent(t *testing.T) {
+	if Persistent("ἀνθρωπος", "ἄνθρωπος", false) != "ἄνθρωπος" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("ἀνθρωπος", "ἄνθρωπος", false))
+	}
+	if Persistent("ἀνθρωπου", "ἄνθρωπος", false) != "ἀνθρώπου" {
+		t.Fatalf("Persistent() failed.")
+	}
+	if Persistent("καταβαινον", "καταβαίνων", false) != "καταβαῖνον" {
+		t.Fatalf("Persistent() failed.")
 	}
 }
 

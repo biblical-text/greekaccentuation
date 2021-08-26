@@ -180,7 +180,7 @@ func onsetNucleusCoda(s string) (string, string, string) {
 		li = i
 		if IsVowel(ch) {
 			if i == 0 && breathing(ch) != nil {
-				onset = letters[0:1]
+				onset = []rune{breathing(letters[0]).Rune()}
 				didBreak = true
 				break
 			} else if i == 0 && len(letters) > 1 && breathing(letters[1]) != nil {

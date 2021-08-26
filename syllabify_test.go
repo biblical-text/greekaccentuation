@@ -1,6 +1,8 @@
 package greekaccentuation
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestIsVowel(t *testing.T) {
 	if !IsVowel('ι') {
@@ -304,6 +306,19 @@ func TestOnsetNucleusCoda(t *testing.T) {
 			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
 		}
 		if c != "" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+	}
+
+	{
+		o, n, c := onsetNucleusCoda("ἀν")
+		if len([]rune(o)) != 1 && []rune(o)[0] != SMOOTH.Rune() {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if n != "α" {
+			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
+		}
+		if c != "ν" {
 			t.Fatalf("OnsetNucleusCoda() failed. o=%s n=%s c=%s", o, n, c)
 		}
 	}
