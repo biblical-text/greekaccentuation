@@ -256,9 +256,10 @@ func OnPenult(w string, default_short bool) string {
 	return w
 }
 
+// Persistent returns the accented form of a word.
 //func Persistent(w string, lemma string, default_short=False) {
-func Persistent(w string, lemma string, defaultShort bool) string {
-	w = strings.ReplaceAll(w, "|", "")
+func Persistent(word string, lemma string, defaultShort bool) string {
+	w := strings.ReplaceAll(word, "|", "")
 
 	// Get accentuation of the lemma
 	accentuation := getAccentuation(lemma)

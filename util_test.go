@@ -11,6 +11,15 @@ func TestRunesInList(t *testing.T) {
 	}
 }
 
+func TestRemoveAccentsFromString(t *testing.T) {
+	if RemoveAccentsFromString("") != "" {
+		t.Fatal("RemoveAccentsFromString() failed")
+	}
+	if RemoveAccentsFromString("ἀληθῶς") != "αληθως" {
+		t.Fatal("RemoveAccentsFromString() failed")
+	}
+}
+
 func TestRuneStringMatch(t *testing.T) {
 	if !runeStringMatch([]rune("αχ"), []rune("αχ")) {
 		t.Fatal("RunesStringMatch() failed")
