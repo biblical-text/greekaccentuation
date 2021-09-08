@@ -263,6 +263,7 @@ func OnPenult(w string, default_short bool) string {
 // if the dictionary entry contains no accent.
 //func Persistent(w string, lemma string, default_short=False) {
 func Persistent(word string, lemma string, defaultShort bool) string {
+
 	w := strings.ReplaceAll(word, "|", "")
 
 	// Get accentuation of the lemma
@@ -297,7 +298,27 @@ func Persistent(word string, lemma string, defaultShort bool) string {
 		}
 	}
 
-	return addAccentuation(s, Accentuation(accentPair))
+	// Why is a stray grave sneaking in at some points. TOFIX
+	// Probably some NFC/NFD issue at some point
+	return fixBrokenUnicode(addAccentuation(s, Accentuation(accentPair)))
+	//return addAccentuation(s, Accentuation(accentPair))
+}
+
+// fixBrokenUnicode removes superfluous bytes
+func fixBrokenUnicode(word string) string {
+	return string(fixBrokenUnicodeRunes([]rune(word)))
+}
+
+func fixBrokenUnicodeRunes(r []rune) []rune {
+	for i, _ := range r {
+		if i > 0 && r[i] == 769 && r[i-1] == 769 {
+			return fixBrokenUnicodeRunes(append(r[0:i], r[i+1:]...))
+		}
+		if i > 0 && r[i] == 769 && r[i-1] == 940 {
+			return fixBrokenUnicodeRunes(append(r[0:i], r[i+1:]...))
+		}
+	}
+	return r[:]
 }
 
 func accentationInSet(acentation Accentuation, set []Accentuation) bool {

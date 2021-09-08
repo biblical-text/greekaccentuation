@@ -1,7 +1,10 @@
 package greekaccentuation
 
 import (
+	"fmt"
 	"testing"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 func TestSyllableAddAccent(t *testing.T) {
@@ -77,9 +80,38 @@ func TestPersistent(t *testing.T) {
 	}
 
 	if Persistent("Ἰάκωβος", "Ἰάκωβος", false) != "Ἰάκωβος" {
-		t.Fatalf("Persistent() failed. Returned: %s. Syllables: %s", Persistent("Ἰάκωβος", "Ἰάκωβος", false), DisplayWord(Syllabify("Ἰάκωβος")))
+		t.Fatalf("Persistent() failed. Returned: %s. Syllables: %s, Bytes: %v",
+			Persistent("Ἰάκωβος", "Ἰάκωβος", false),
+			DisplayWord(Syllabify("Ἰάκωβος")),
+			decomposedBytes(Persistent("Ἰάκωβος", "Ἰάκωβος", false)))
 	}
 
+}
+
+func TestFixBrokenUnicodeRunes(t *testing.T) {
+	//fmt.Println("####", "Ἰάκωβος", decomposedBytes(string(fixBrokenUnicode("Ἰάκωβος"))))
+	if !RuneArrayEqual(fixBrokenUnicodeRunes(
+		[]rune{921, 787, 945, 769, 769, 954, 969, 946, 959, 962}),
+		[]rune{921, 787, 945, 769, 954, 969, 946, 959, 962}) {
+		t.Fatalf("fixBrokenUnicodeRunes() failed")
+	}
+}
+
+func RuneArrayEqual(a, b []rune) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for x, _ := range a {
+		if a[x] != b[x] {
+			fmt.Println("array item ", x, " match failed", a[x], "!=", b[x])
+			return false
+		}
+	}
+	return true
+}
+
+func decomposedBytes(s string) []rune {
+	return []rune(norm.NFD.String(s))
 }
 
 func stringArrayMatch(a, b []string) bool {
