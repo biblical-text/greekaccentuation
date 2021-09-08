@@ -1,6 +1,7 @@
 package greekaccentuation
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -124,6 +125,12 @@ func TestSyllabify(t *testing.T) {
 	}
 	if !ArrayEqual(Syllabify("Ἰάννης"), []string{"Ἰ", "άν", "νης"}) {
 		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("Ἰάννης"))
+	}
+	if !ArrayEqual(Syllabify("Ἰάκωβος"), []string{"Ἰ", "ά", "κω", "βος"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("Ἰάκωβος"))
+	}
+	if !ArrayEqual(Syllabify("Ἀαρών"), []string{"Ἀ", "α", "ρών"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("Ἀαρών"))
 	}
 	// TODO: I am not yet sure of the form of ῡ́ and why it is relevant.
 	//if !ArrayEqual(Syllabify("φῡ́ω"), []string{"φῡ́", "ω"}) {
@@ -384,6 +391,7 @@ func ArrayEqual(a, b []string) bool {
 	}
 	for x, _ := range a {
 		if a[x] != b[x] {
+			fmt.Println("array item ", x, " match failed", a[x], "!=", b[x])
 			return false
 		}
 	}

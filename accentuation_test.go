@@ -64,7 +64,7 @@ func TestPersistent(t *testing.T) {
 	if Persistent("Ααρων", "Ααρων", false) != "" {
 		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ααρων", "Ααρων", false))
 	}
-	if Persistent("Ἀαρων", "Ἀαρών", false) != "Ἀαρών" {
+	if Persistent("Ἀαρων", "Ἀαρών", false) != "Ἀαρών" {
 		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ἀαρων", "Ἀαρών", false))
 	}
 	// Missing breathing causes panic
@@ -74,6 +74,10 @@ func TestPersistent(t *testing.T) {
 
 	if Persistent("Ἰαννης", "Ἰάννης", false) != "Ἰάννης" {
 		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ἰαννης", "Ἰάννης", false))
+	}
+
+	if Persistent("Ἰάκωβος", "Ἰάκωβος", false) != "Ἰάκωβος" {
+		t.Fatalf("Persistent() failed. Returned: %s. Syllables: %s", Persistent("Ἰάκωβος", "Ἰάκωβος", false), DisplayWord(Syllabify("Ἰάκωβος")))
 	}
 
 }
