@@ -89,6 +89,12 @@ func TestDisplayWord(t *testing.T) {
 	if DisplayWord(Syllabify("γγγ")) != "γγγ" {
 		t.Fatal("DisplayWord() failed")
 	}
+	if DisplayWord(Syllabify("ἰάννης")) != "ἰ.άν.νης" {
+		t.Fatal("DisplayWord() failed. Returned ", DisplayWord(Syllabify("ἰάννης")))
+	}
+	if DisplayWord(Syllabify("Ἰάννης")) != "Ἰ.άν.νης" {
+		t.Fatal("DisplayWord() failed")
+	}
 }
 
 func TestSyllabify(t *testing.T) {
@@ -103,6 +109,18 @@ func TestSyllabify(t *testing.T) {
 	}
 	if !ArrayEqual(Syllabify("οί"), []string{"οί"}) {
 		t.Fatal("Syllabify() failed")
+	}
+	if !ArrayEqual(Syllabify("ὑπακούουσιν"), []string{"ὑ", "πα", "κού", "ου", "σιν"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("ὑπακούουσιν"))
+	}
+	if !ArrayEqual(Syllabify("θάλασσα"), []string{"θά", "λασ", "σα"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("θάλασσα"))
+	}
+	if !ArrayEqual(Syllabify("ἴαμα"), []string{"ἴ", "α", "μα"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("ἴαμα"))
+	}
+	if !ArrayEqual(Syllabify("ἰάννης"), []string{"ἰ", "άν", "νης"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("ἰάννης"))
 	}
 	if !ArrayEqual(Syllabify("Ἰάννης"), []string{"Ἰ", "άν", "νης"}) {
 		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("Ἰάννης"))

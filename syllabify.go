@@ -65,28 +65,34 @@ func Syllabify(word string) []string {
 	state := 0
 	currentSyllable := []rune{}
 	result := []string{}
+	// Walk backwards from the end of the string and break
+	// at the appropriate positions.
 	for i := len(characters) - 1; i >= 0; i-- {
 		ch := characters[i]
+		//fmt.Println(i, string(ch), state, "isvowel", IsVowel(ch), "--", word, " <-->", string(currentSyllable), result)
 		switch state {
 		case 0:
+			// Eat characters until we have eaten our first vowel, then change state
 			currentSyllable = append([]rune{ch}, currentSyllable...)
 			if IsVowel(ch) {
 				state = 1
 			}
 		case 1:
-			if IsVowel(ch) || ch == ROUGH.Rune() {
-				if isDipthong(ch, currentSyllable[0]) {
-					if currentSyllable[0] == ACUTE.Rune() {
+			// We have eaten a vowel, now just take in legitimate vowel combinations
+			// or the consonante that appears at the start of the syllable. ἴαμα
+			if IsVowel(ch) || ch == ROUGH.Rune() || ch == ACUTE.Rune() || ch == SMOOTH.Rune() {
+				if currentSyllable[0] == ACUTE.Rune() {
+					currentSyllable = append([]rune{ch}, currentSyllable...)
+				} else if currentSyllable[0] == ROUGH.Rune() {
+					currentSyllable = append([]rune{ch}, currentSyllable...)
+				} else if currentSyllable[0] == SMOOTH.Rune() {
+					currentSyllable = append([]rune{ch}, currentSyllable...)
+				} else if isDipthong(ch, currentSyllable[0]) {
+					if len(currentSyllable) > 1 && (currentSyllable[1] == 'ι' || currentSyllable[1] == 'Ι') {
+						result = append([]string{string(currentSyllable[1:])}, result...)
 						currentSyllable = append([]rune{ch}, currentSyllable[0])
-					} else if currentSyllable[0] == ROUGH.Rune() {
-						currentSyllable = append([]rune{ch}, currentSyllable[0])
-					} else if isDipthong(ch, currentSyllable[0]) {
-						if len(currentSyllable) > 1 && currentSyllable[1] == 'ι' {
-							result = append([]string{string(currentSyllable[1:])}, result...)
-							currentSyllable = append([]rune{ch}, currentSyllable[0])
-						} else {
-							currentSyllable = append([]rune{ch}, currentSyllable...)
-						}
+					} else {
+						currentSyllable = append([]rune{ch}, currentSyllable...)
 					}
 				} else {
 					result = append([]string{string(currentSyllable)}, result...)
@@ -97,7 +103,9 @@ func Syllabify(word string) []string {
 				state = 2
 			}
 		case 2:
-			if IsVowel(ch) {
+			// We have eaten a full syllable, but we might need to eat a
+			// preceeding consonant.
+			if IsVowel(ch) || ch == ACUTE.Rune() {
 				result = append([]string{string(currentSyllable)}, result...)
 				currentSyllable = []rune{ch}
 				state = 1

@@ -1,6 +1,7 @@
 package greekaccentuation
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 )
@@ -296,6 +297,8 @@ func Persistent(word string, lemma string, defaultShort bool) string {
 			}
 		}
 	}
+
+	fmt.Println("aa:", s)
 	return addAccentuation(s, Accentuation(accentPair))
 }
 
