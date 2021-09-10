@@ -263,7 +263,6 @@ func OnPenult(w string, default_short bool) string {
 // if the dictionary entry contains no accent.
 //func Persistent(w string, lemma string, default_short=False) {
 func Persistent(word string, lemma string, defaultShort bool) string {
-
 	w := strings.ReplaceAll(word, "|", "")
 
 	// Get accentuation of the lemma

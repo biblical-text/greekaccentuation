@@ -36,6 +36,10 @@ func TestAddAccentuation(t *testing.T) {
 		t.Fatalf("AddAccentuation() failed. ἄνθρωπος != %v",
 			addAccentuation(Syllabify("ἄνθρωπος"), PROPAROXYTONE))
 	}
+	if addAccentuation(Syllabify("Ἰαρεδ"), OXYTONE) != "Ἰαρέδ" {
+		t.Fatalf("AddAccentuation() failed. Ἰαρέδ != %v",
+			addAccentuation(Syllabify("Ἰαρεδ"), OXYTONE))
+	}
 }
 
 func TestPossibleAccentuations(t *testing.T) {
@@ -85,6 +89,12 @@ func TestPersistent(t *testing.T) {
 			DisplayWord(Syllabify("Ἰάκωβος")),
 			decomposedBytes(Persistent("Ἰάκωβος", "Ἰάκωβος", false)))
 	}
+	if Persistent("Ἰαρεδ", "Ἰαρέδ", false) != "Ἰαρέδ" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ἰαρεδ", "Ἰαρέδ", false))
+	}
+	//if Persistent("Ιαρεδ", "Ἰαρέδ", false) != "Ἰαρέδ" {
+	//	t.Fatalf("Persistent() failed. Returned %s", Persistent("Ιαρεδ", "Ἰαρέδ", false))
+	//}
 
 }
 

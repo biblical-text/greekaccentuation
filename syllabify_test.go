@@ -132,6 +132,9 @@ func TestSyllabify(t *testing.T) {
 	if !ArrayEqual(Syllabify("Ἀαρών"), []string{"Ἀ", "α", "ρών"}) {
 		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("Ἀαρών"))
 	}
+	if !ArrayEqual(Syllabify("Ἰαρέδ"), []string{"Ἰ", "α", "ρέδ"}) {
+		t.Fatalf("Syllabify() failed. Returned %v", Syllabify("Ἰαρέδ"))
+	}
 	// TODO: I am not yet sure of the form of ῡ́ and why it is relevant.
 	//if !ArrayEqual(Syllabify("φῡ́ω"), []string{"φῡ́", "ω"}) {
 	//	t.Fatalf("Syllabify() failed: %v", Syllabify("φῡ́ω"))
