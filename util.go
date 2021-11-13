@@ -100,7 +100,7 @@ func RemoveAccentsFromString(s string) string {
 // if the character is valid for a standard greek string.
 func RemoveAccentFromRune(r rune) (rune, bool) {
 	switch r {
-	case 'α', 'ᾰ', 'ά', 'ἀ', 'ά', 'ὰ', 'ἄ', 'ἁ', 'ᾶ', 'ᾴ', 'ᾳ', 'ἆ', 'ἅ', 'ᾄ', 'ᾅ', 'ᾷ', 'ἃ', 'ἂ', 'ᾀ':
+	case 'α', 'ᾰ', 'ά', 'ἀ', 'ά', 'ὰ', 'ἄ', 'ἁ', 'ᾶ', 'ᾴ', 'ᾳ', 'ἆ', 'ἅ', 'ᾄ', 'ᾅ', 'ᾷ', 'ἃ', 'ἂ', 'ᾀ', 'ᾱ':
 		return 'α', true
 	case 'Ἀ', 'A', 'Ἄ', 'Ἃ', 'Ἅ', 'ᾍ', 'Ἆ', 'Ἁ':
 		return 'Α', true
