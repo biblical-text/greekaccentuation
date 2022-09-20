@@ -92,6 +92,15 @@ func TestPersistent(t *testing.T) {
 	if Persistent("Ἰαρεδ", "Ἰαρέδ", false) != "Ἰαρέδ" {
 		t.Fatalf("Persistent() failed. Returned %s", Persistent("Ἰαρεδ", "Ἰαρέδ", false))
 	}
+	if Persistent("περιπατει", "περιπατῶ", false) != "περιπατεῖ" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("περιπατει", "περιπατέω", false))
+	}
+	if Persistent("περιπατεις", "περιπατῶ", false) != "περιπατεῖς" {
+		t.Fatalf("Persistent() failed. Returned %s", Persistent("περιπατεις", "περιπατεῖς", false))
+	}
+	//if Persistent("περιπατει", "περιπατέω", false) != "περιπατεῖ" {
+	//	t.Fatalf("Persistent() failed. Returned %s", Persistent("περιπατει", "περιπατέω", false))
+	//}
 	//if Persistent("Ιαρεδ", "Ἰαρέδ", false) != "Ἰαρέδ" {
 	//	t.Fatalf("Persistent() failed. Returned %s", Persistent("Ιαρεδ", "Ἰαρέδ", false))
 	//}
