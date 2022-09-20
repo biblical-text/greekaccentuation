@@ -38,6 +38,15 @@ func TestIsVowel(t *testing.T) {
 	}
 }
 
+func TestRebreath(t *testing.T) {
+	if Rebreath("εγω") != "ἐγω" {
+		t.Fatal("Rebreath() failed")
+	}
+	if Rebreath("οικος") != "οἰκος" {
+		t.Fatal("Rebreath() failed")
+	}
+}
+
 func TestIsDipthong(t *testing.T) {
 	if !isDipthong('α', 'ι') {
 		t.Fatal("IsDipthong() failed")

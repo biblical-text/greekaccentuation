@@ -304,7 +304,7 @@ func syllableAccent(s string) Accent {
 	return 0
 }
 
-func rebreath(word string) string {
+func Rebreath(word string) string {
 	if word == "" {
 		return ""
 	}
